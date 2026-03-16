@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineRank - Avaliação de Lançamentos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: #0b0e14;
+            color: #eaeef2;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        /* cabeçalho com barra de pesquisa */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 1rem 0 0.5rem 0;
+            border-bottom: 1px solid #2a2f3a;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #1e222b;
+            border-radius: 40px;
+            padding: 0.3rem 0.3rem 0.3rem 1rem;
+            border: 1px solid #3d4350;
+            transition: all 0.2s;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: #4b7bec;
+            box-shadow: 0 0 0 2px rgba(75, 123, 236, 0.3);
+        }
+
+        .search-wrapper input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f0f3f8;
+            font-size: 1rem;
+            padding: 0.5rem 0.3rem;
+            width: 240px;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #7f879b;
+            font-style: italic;
+        }
+
+        .search-wrapper button {
+            background: #4b7bec;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            margin-left: 0.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+            letter-spacing: 0.3px;
+        }
+
+        .search-wrapper button:hover {
+            background: #5f8bf0;
+            transform: scale(1.02);
+        }
+
+        /* banner led azul */
+        .banner-led {
+            background: #0a1a2f;
+            margin: 1.8rem 0 2.2rem 0;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 160, 255, 0.7), inset 0 0 10px #0066ff40;
+            border: 1px solid #0077ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-led::before {
+            content: "";
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 120%;
+            height: 140%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 180, 255, 0.4), transparent 60%);
+            animation: brilhoLed 3s infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes brilhoLed {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .banner-led h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #a0e0ff;
+            text-shadow: 0 0 8px #0099ff, 0 0 20px #006eff;
+            position: relative;
+            z-index: 2;
+            font-family: 'Trebuchet MS', 'Impact', sans-serif;
+            word-break: break-word;
+        }
+
+        /* catálogo: fileiras com filme + descricao + nota */
+        .catalogo {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            margin: 2.5rem 0 1.5rem;
+        }
+
+        /* cada fileira terá 2 filmes (lado a lado) */
+        .fileira {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .cartao-filme {
+            display: flex;
+            background: #171c26;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #2d3440;
+            transition: 0.2s;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        .cartao-filme:hover {
+            border-color: #4f5b70;
+            transform: translateY(-4px);
+            box-shadow: 0 14px 26px #00000080;
+        }
+
+        /* capa do filme (apenas ilustrativa) */
+        .capa {
+            width: 130px;
+            background: linear-gradient(145deg, #2f3542, #1e232e);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 1rem 0.3rem;
+            font-weight: bold;
+            color: #b5c8ff;
+            text-align: center;
+            border-right: 2px solid #2f3a4b;
+            box-shadow: inset 0 0 30px #0000004d;
+        }
+
+        .capa span {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: #afc5ff;
+            background: rgba(0, 20, 40, 0.7);
+            padding: 0.2rem 0;
+            border-radius: 12px;
+        }
+
+        .info-filme {
+            flex: 1;
+            padding: 1.2rem 1.5rem 1.2rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .titulo-filme {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f0f5ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .descricao {
+            color: #b4c0d5;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 4px 0 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .nota-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .nota-badge {
+            background: #0f3460;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #ffd966;
+            border: 1px solid #4e7ac7;
+            box-shadow: 0 0 10px #1e5eb0;
+            display: inline-block;
+        }
+
+        .estrelas {
+            color: #f5b342;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+        }
+
+        /* aviso importante (após 2 fileiras) */
+        .aviso-importante {
+            background: #330f0f;
+            border-left: 12px solid #e63946;
+            border-radius: 16px;
+            padding: 2rem 2rem;
+            margin: 2.5rem 0 2.5rem 0;
+            box-shadow: 0 0 25px rgba(230, 57, 70, 0.5);
+            color: #ffe6e6;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .aviso-importante .icone {
+            font-size: 3.5rem;
+            background: #e63946;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a0000;
+            font-weight: 900;
+            box-shadow: 0 0 30px red;
+        }
+
+        .aviso-importante .texto-aviso h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+            letter-spacing: 2px;
+        }
+
+        .aviso-importante .texto-aviso p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* graffiti "nova!" */
+        .graffiti-nova {
+            text-align: right;
+            margin: 2rem 0 1rem 0;
+            position: relative;
+        }
+
+        .graffiti-nova span {
+            font-family: 'Permanent Marker', 'Impact', 'Arial Black', cursive;
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffbb33, #ff8c1a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 6px 6px 0 #1e1e2f, 10px 10px 20px rgba(0, 0, 0, 0.8);
+            letter-spacing: -2px;
+            transform: rotate(-3deg) skewX(-8deg);
+            display: inline-block;
+            border: 4px dashed #ffae42;
+            padding: 0.2rem 2rem 0.2rem 2rem;
+            border-radius: 60px 10px 60px 10px;
+            background-color: #0c0f17;
+            background-image: radial-gradient(circle at 30% 40%, #ffd96655 2px, transparent 2px), 
+                              repeating-linear-gradient(45deg, #00000033 0px, #00000033 4px, transparent 4px, transparent 8px);
+        }
+
+        /* rodapé simples */
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #5e6a80;
+            padding: 1rem;
+            border-top: 1px solid #262d38;
+        }
+
+        /* responsivo */
+        @media (max-width: 800px) {
+            .fileira {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .banner-led h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cartao-filme {
+                flex-direction: column;
+            }
+            .capa {
+                width: 100%;
+                border-right: none;
+                border-bottom: 2px solid #2f3a4b;
+                padding: 1rem;
+            }
+            .capa span {
+                writing-mode: horizontal-tb;
+                transform: none;
+            }
+            .search-wrapper input {
+                width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- barra de pesquisa no canto superior direito -->
+        <div class="top-bar">
+            <div class="search-wrapper">
+                <input type="text" placeholder="Buscar filmes...">
+                <button>🔍</button>
+            </div>
+        </div>
+
+        <!-- banner com led azul -->
+        <div class="banner-led">
+            <h1>AVALIAÇÃO DOS LANÇAMENTOS</h1>
+        </div>
+
+        <!-- catálogo de filmes: duas fileiras com dois filmes cada -->
+        <div class="catalogo">
+            <!-- FILEIRA 1 -->
+            <div class="fileira">
+                <!-- filme 1 -->
+                <div class="cartao-filme">
+                    <div class="capa">
+                        <span>🌌 DUNE</span>
+                    </div>
+                    <div class="info-filme">
+                        <div class="titulo-filme">Duna: Parte 2 ⭐</div>
+                        <div class="descricao">Paul Atreides se une a Chani e aos Fremen enquanto busca vingança contra os conspiradores que destruíram sua família. Épico visual e sonoro.</div>
+                        <div class="nota-wrapper">
+                            <span class="nota-badge">9.2</span>
+                            <span class="estrelas">★★★★★</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- filme 2 -->
+                <div class="cartao-filme">
+                    <div class="capa">
+                        <span>🎭 OPPENHEIMER</span>
+                    </div>
+                    <div class="info-filme">
+                        <div class="titulo-filme">Oppenheimer</div>
+                        <div class="descricao">A história do físico J. Robert Oppenheimer e seu papel no desenvolvimento da bomba atômica. Intenso e reflexivo.</div>
+                        <div class="nota-wrapper">
+                            <span class="nota-badge">8.8</span>
+                            <span class="estrelas">★★★★☆</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILEIRA 2 -->
+            <div class="fileira">
+                <!-- filme 3 -->
+                <div class="cartao-filme">
+                    <div class="capa">
+                        <span>🤖 POBRES CRIATURAS</span>
+                    </div>
+                    <div class="info-filme">
+                        <div class="titulo-filme">Pobres Criaturas</div>
+                        <div class="descricao">Bella Baxter é uma jovem trazida de volta à vida por um cientista excêntrico. Fantasia feminista e visualmente arrebatadora.</div>
+                        <div class="nota-wrapper">
+                            <span class="nota-badge">8.5</span>
+                            <span class="estrelas">★★★★☆</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- filme 4 -->
+                <div class="cartao-filme">
+                    <div class="capa">
+                        <span>🚀 FURIOSA</span>
+                    </div>
+                    <div class="info-filme">
+                        <div class="titulo-filme">Furiosa: Saga Mad Max</div>
+                        <div class="descricao">Origem da guerreira Furiosa, capturada ainda jovem e que luta para voltar para casa. Pura adrenalina pós-apocalíptica.</div>
+                        <div class="nota-wrapper">
+                            <span class="nota-badge">8.9</span>
+                            <span class="estrelas">★★★★★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AVISO IMPORTANTE (após duas fileiras) -->
+        <div class="aviso-importante">
+            <div class="icone">⚠️</div>
+            <div class="texto-aviso">
+                <h2>AVISO IMPORTANTE</h2>
+                <p>As notas podem mudar conforme novos votos. Sessões extras adicionadas no fim de semana!</p>
+            </div>
+        </div>
+
+        <!-- GRAFFITI "NOVA!" -->
+        <div class="graffiti-nova">
+            <span>NOVA!</span>
+        </div>
+
+        <!-- fileira extra (opcional) para manter o conceito, mas já cumprimos: duas fileiras + aviso + graffiti -->
+        <!-- bônus: uma fileira a mais para dar vazão, sem comprometer o design -->
+        <div class="fileira" style="margin-top: 1rem;">
+            <!-- filme 5 (extra) -->
+            <div class="cartao-filme">
+                <div class="capa">
+                    <span>🐈 GATO DE BOTAS</span>
+                </div>
+                <div class="info-filme">
+                    <div class="titulo-filme">Gato de Botas 2</div>
+                    <div class="descricao">O Gato descobre que já consumiu oito de suas nove vidas e parte em uma jornada para encontrar o lendário Último Desejo.</div>
+                    <div class="nota-wrapper">
+                        <span class="nota-badge">8.7</span>
+                        <span class="estrelas">★★★★☆</span>
+                    </div>
+                </div>
+            </div>
+            <!-- filme 6 (extra) -->
+            <div class="cartao-filme">
+                <div class="capa">
+                    <span>💀 BEETLEJUICE</span>
+                </div>
+                <div class="info-filme">
+                    <div class="titulo-filme">Beetlejuice 2</div>
+                    <div class="descricao">A família Deetz retorna a Winter River e Lydia descobre que Beetlejuice ainda está à solta. Caos e comédia macabra.</div>
+                    <div class="nota-wrapper">
+                        <span class="nota-badge">7.9</span>
+                        <span class="estrelas">★★★☆☆</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            🎬 Catálogo de lançamentos - avaliações da crítica e público
+        </div>
+    </div>
+</body>
+</html>
