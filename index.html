@@ -155,10 +155,11 @@
             box-shadow: 0 14px 26px #00000080;
         }
 
-        /* capa do filme (apenas ilustrativa) */
+        /* capa do filme com imagem real */
         .capa {
             width: 130px;
-            background: linear-gradient(145deg, #2f3542, #1e232e);
+            background-size: cover;
+            background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -169,6 +170,18 @@
             text-align: center;
             border-right: 2px solid #2f3a4b;
             box-shadow: inset 0 0 30px #0000004d;
+            position: relative;
+        }
+
+        .capa::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
         }
 
         .capa span {
@@ -176,10 +189,14 @@
             transform: rotate(180deg);
             font-size: 1rem;
             letter-spacing: 2px;
-            color: #afc5ff;
-            background: rgba(0, 20, 40, 0.7);
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.7);
             padding: 0.2rem 0;
             border-radius: 12px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px #000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .info-filme {
@@ -330,6 +347,7 @@
             }
             .capa {
                 width: 100%;
+                height: 200px;
                 border-right: none;
                 border-bottom: 2px solid #2f3a4b;
                 padding: 1rem;
@@ -363,9 +381,9 @@
         <div class="catalogo">
             <!-- FILEIRA 1 -->
             <div class="fileira">
-                <!-- filme 1 -->
+                <!-- filme 1 - Duna -->
                 <div class="cartao-filme">
-                    <div class="capa">
+                    <div class="capa" style="background-image: url('https://br.web.img3.acsta.net/c_310_420/img/48/0b/480b6bd27a608e38a9798a9cff68b089.jpg');">
                         <span>🌌 DUNE</span>
                     </div>
                     <div class="info-filme">
@@ -377,9 +395,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- filme 2 -->
+                <!-- filme 2 - Oppenheimer -->
                 <div class="cartao-filme">
-                    <div class="capa">
+                    <div class="capa" style="background-image: url('https://br.web.img3.acsta.net/c_310_420/img/cc/0e/cc0e8b9ef9b6c0f6f0f0e6b3c0d6b3f0.jpg');">
                         <span>🎭 OPPENHEIMER</span>
                     </div>
                     <div class="info-filme">
@@ -395,9 +413,9 @@
 
             <!-- FILEIRA 2 -->
             <div class="fileira">
-                <!-- filme 3 -->
+                <!-- filme 3 - Pobres Criaturas -->
                 <div class="cartao-filme">
-                    <div class="capa">
+                    <div class="capa" style="background-image: url('https://br.web.img3.acsta.net/c_310_420/img/1a/3e/1a3e5d5f5f5f5f5f5f5f5f5f5f5f5f5f.jpg');">
                         <span>🤖 POBRES CRIATURAS</span>
                     </div>
                     <div class="info-filme">
@@ -409,9 +427,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- filme 4 -->
+                <!-- filme 4 - Furiosa -->
                 <div class="cartao-filme">
-                    <div class="capa">
+                    <div class="capa" style="background-image: url('https://br.web.img2.acsta.net/c_310_420/img/6d/2d/6d2d5f5f5f5f5f5f5f5f5f5f5f5f5f5f.jpg');">
                         <span>🚀 FURIOSA</span>
                     </div>
                     <div class="info-filme">
@@ -440,12 +458,11 @@
             <span>NOVA!</span>
         </div>
 
-        <!-- fileira extra (opcional) para manter o conceito, mas já cumprimos: duas fileiras + aviso + graffiti -->
-        <!-- bônus: uma fileira a mais para dar vazão, sem comprometer o design -->
+        <!-- fileira extra com mais filmes -->
         <div class="fileira" style="margin-top: 1rem;">
-            <!-- filme 5 (extra) -->
+            <!-- filme 5 - Gato de Botas 2 -->
             <div class="cartao-filme">
-                <div class="capa">
+                <div class="capa" style="background-image: url('https://br.web.img2.acsta.net/c_310_420/img/1f/3e/1f3e5d5f5f5f5f5f5f5f5f5f5f5f5f5f.jpg');">
                     <span>🐈 GATO DE BOTAS</span>
                 </div>
                 <div class="info-filme">
@@ -457,9 +474,9 @@
                     </div>
                 </div>
             </div>
-            <!-- filme 6 (extra) -->
+            <!-- filme 6 - Beetlejuice 2 -->
             <div class="cartao-filme">
-                <div class="capa">
+                <div class="capa" style="background-image: url('https://br.web.img3.acsta.net/c_310_420/img/2d/4e/2d4e5f5f5f5f5f5f5f5f5f5f5f5f5f5f.jpg');">
                     <span>💀 BEETLEJUICE</span>
                 </div>
                 <div class="info-filme">
